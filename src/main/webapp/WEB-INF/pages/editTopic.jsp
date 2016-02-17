@@ -1,5 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %> 
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -26,14 +26,18 @@
 <div class="container reply">
     <div style="margin-left:70px;margin-right: 40px;">
         <div><img src="../public/images/reply.jpg" /></div>
-        <form:form action="/addReplyPost" method="post" role="form">
+        <form:form action="/editTopicPost" method="post" role="form">
             <div class="form-group">
                 <input id="userid" name="userid" type="hidden" value="${userid}" />
                 <input id="topicid" name="topicid" type="hidden" value="${topicid}" />
             </div>
             <div class="form-group" style="text-align: center;">
-                <label for="replycontent" style="padding-left: 14%;text-align: left;">回帖内容:</label>
-                <textarea rows="20" class="form-control reply-textarea" id="replycontent" name="replycontent"></textarea>
+                <label for="editTitle" style="padding-left: 14%;text-align: left;">标题:</label>
+                <input id="editTitle" name="editTitle"  style="width:500px" value="${title}" />
+            </div>
+            <div class="form-group" style="text-align: center;">
+                <label for="editContent" style="padding-left: 14%;text-align: left;">回帖内容:</label>
+                <textarea rows="20" class="form-control reply-textarea" id="editContent" name="editContent">${content}</textarea>
             </div>
             <div class="form-group" style="padding-right: 14%; text-align: right;">
                 <button type="submit" class="btn btn-sm btn-success">提交</button>

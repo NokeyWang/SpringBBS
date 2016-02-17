@@ -15,7 +15,7 @@ public interface TopicRepository extends JpaRepository<TopicEntity, Integer> {
     @Transactional  // 说明该方法是事务性操作
     // 定义查询
     // @Param注解用于提取参数
-    @Query("update UserEntity us set us.name=:qName, us.password=:qPassword where us.id=:qId")
-    public void updateUser(@Param("qName") String firstName, @Param("qPassword") String password,
-                           @Param("qId") Integer id);
+    @Query("update TopicEntity topic set topic.title =:qTitle, topic.content =:qContent where topic.topicid=:qId")
+    public void updateTopic(@Param("qTitle") String title, @Param("qContent") String content,
+                            @Param("qId") Integer id);
 }

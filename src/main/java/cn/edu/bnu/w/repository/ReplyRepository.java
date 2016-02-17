@@ -15,7 +15,6 @@ public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
     @Transactional  // 说明该方法是事务性操作
     // 定义查询
     // @Param注解用于提取参数
-    @Query("update UserEntity us set us.name=:qName, us.password=:qPassword where us.id=:qId")
-    public void updateUser(@Param("qName") String firstName, @Param("qPassword") String password,
-                           @Param("qId") Integer id);
+    @Query("update ReplyEntity reply set reply.content =:qContent where reply.replyid=:qId")
+    public void updateReply(@Param("qContent") String content, @Param("qId") Integer id);
 }

@@ -34,6 +34,8 @@ public class TopicController {
         UserEntity userEntity = userRepository.findOne(userid);
         ModelAndView modelAndView = new ModelAndView("forum");
         List<TopicEntity> topicEntityList = topicRepository.findAll();
+        Integer count = topicEntityList.size();
+        modelAndView.addObject("count", count);
         modelAndView.addObject("username", userEntity.getName());
         modelAndView.addObject("userid", userid);
         modelAndView.addObject("topicList", topicEntityList);
@@ -140,4 +142,131 @@ public class TopicController {
         }
         return (new ModelAndView("loginError"));
     }
+
+
+    /**
+     * 删除帖子
+     * @param userid 用户ID
+     * @param topicid 帖子ID
+     * @return
+     */
+    @RequestMapping(value = "/deleteTopic", method = RequestMethod.POST)
+    public ModelAndView deleteTopic(@ModelAttribute("deleteUserid") Integer userid, @ModelAttribute("deleteTopicid") Integer topicid) {
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------");
+        System.out.println(topicid);
+        System.out.println(userid);
+        topicRepository.delete(topicRepository.findOne(topicid));
+        List<TopicEntity> topicEntityList = topicRepository.findAll();
+        UserEntity userEntity = userRepository.findOne(userid);
+        ModelAndView modelAndView = new ModelAndView("forum");
+        modelAndView.addObject("username", userEntity.getName());
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topicList", topicEntityList);
+        Integer count = topicEntityList.size();
+        modelAndView.addObject("count", count);
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/editTopic", method = RequestMethod.POST)
+    public ModelAndView editTopic(@ModelAttribute("userid") Integer userid, @ModelAttribute("topicid") Integer topicid) {
+        TopicEntity topicEntity = topicRepository.findOne(topicid);
+        ModelAndView modelAndView = new ModelAndView("editTopic");
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topicid", topicid);
+        modelAndView.addObject("title", topicEntity.getTitle());
+        modelAndView.addObject("content", topicEntity.getContent());
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/editTopicPost", method = RequestMethod.POST)
+    public ModelAndView editTopicPost(@ModelAttribute("userid") Integer userid, @ModelAttribute("topicid") Integer topicid,
+                                  @ModelAttribute("editTitle") String title, @ModelAttribute("editContent")String content) {
+
+
+        topicRepository.updateTopic(title, content, topicid);
+
+        TopicEntity topicEntity = topicRepository.findOne(topicid);
+        List<ReplyEntity> replyEntityList = topicEntity.getReplys();
+        List<ReplyInfo> replyInfoList = new ArrayList<ReplyInfo>();
+        for (ReplyEntity reply :
+                replyEntityList) {
+            ReplyInfo replyInfo = new ReplyInfo(userRepository.findOne(reply.getUserid()).getName(), reply);
+            replyInfoList.add(replyInfo);
+        }
+        ModelAndView modelAndView = new ModelAndView("topicDetail");
+        // 传递给请求页面
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topic", topicEntity);
+        modelAndView.addObject("replyInfoList", replyInfoList);
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/deleteReply", method = RequestMethod.POST)
+    public ModelAndView deleteReply(@ModelAttribute("userid") Integer userid, @ModelAttribute("replyid") Integer replyid,
+                                    @ModelAttribute("topicid") Integer topicid) {
+        replyRepository.delete(replyRepository.findOne(replyid));
+
+        TopicEntity topicEntity = topicRepository.findOne(topicid);
+        List<ReplyEntity> replyEntityList = topicEntity.getReplys();
+        List<ReplyInfo> replyInfoList = new ArrayList<ReplyInfo>();
+        for (ReplyEntity reply :
+                replyEntityList) {
+            ReplyInfo replyInfo = new ReplyInfo(userRepository.findOne(reply.getUserid()).getName(), reply);
+            replyInfoList.add(replyInfo);
+        }
+        ModelAndView modelAndView = new ModelAndView("topicDetail");
+        // 传递给请求页面
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topic", topicEntity);
+        modelAndView.addObject("replyInfoList", replyInfoList);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/editReply", method = RequestMethod.POST)
+    public ModelAndView editReply(@ModelAttribute("userid") Integer userid, @ModelAttribute("topicid") Integer topicid,
+                                  @ModelAttribute("replyid") Integer replyid) {
+
+        ReplyEntity replyEntity = replyRepository.findOne(replyid);
+
+        ModelAndView modelAndView = new ModelAndView("editReply");
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topicid", topicid);
+        modelAndView.addObject("replyid", replyid);
+        modelAndView.addObject("content", replyEntity.getContent());
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/editReplyPost", method = RequestMethod.POST)
+    public ModelAndView editReplyPost(@ModelAttribute("userid") Integer userid, @ModelAttribute("topicid") Integer topicid,
+                                      @ModelAttribute("replyid") Integer replyid, @ModelAttribute("replyContent")String content) {
+
+        replyRepository.updateReply(content, replyid);
+
+        TopicEntity topicEntity = topicRepository.findOne(topicid);
+        List<ReplyEntity> replyEntityList = topicEntity.getReplys();
+        List<ReplyInfo> replyInfoList = new ArrayList<ReplyInfo>();
+        for (ReplyEntity reply :
+                replyEntityList) {
+            ReplyInfo replyInfo = new ReplyInfo(userRepository.findOne(reply.getUserid()).getName(), reply);
+            replyInfoList.add(replyInfo);
+        }
+        ModelAndView modelAndView = new ModelAndView("topicDetail");
+        // 传递给请求页面
+        modelAndView.addObject("userid", userid);
+        modelAndView.addObject("topic", topicEntity);
+        modelAndView.addObject("replyInfoList", replyInfoList);
+        return modelAndView;
+    }
+
+
 }
